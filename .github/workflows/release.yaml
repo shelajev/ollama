@@ -15,7 +15,7 @@ jobs:
     runs-on: macos-13
     environment: release
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Set Version
         shell: bash
         run: |
@@ -33,7 +33,7 @@ jobs:
           security import certificate.p12 -k build.keychain -P $MACOS_SIGNING_KEY_PASSWORD -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k password build.keychain
           security set-keychain-settings -lut 3600 build.keychain
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with:
           go-version-file: go.mod
           cache: true
@@ -48,7 +48,7 @@ jobs:
         run: |
           ./scripts/build_darwin.sh
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: dist-darwin
           path: |
@@ -63,7 +63,7 @@ jobs:
     env:
       KEY_CONTAINER: ${{ vars.KEY_CONTAINER }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Set make jobs default
         run: |
           echo "MAKEFLAGS=--jobs=$((Get-ComputerInfo -Property CsProcessors).CsProcessors.NumberOfCores)" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
@@ -77,7 +77,7 @@ jobs:
       - name: Install msys2 tools
         run: |
           Start-Process "c:\msys64\usr\bin\pacman.exe" -ArgumentList @("-S", "--noconfirm", "mingw-w64-clang-x86_64-gcc-compat", "mingw-w64-clang-x86_64-clang") -NoNewWindow -Wait
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with:
           go-version-file: go.mod
           cache: true
@@ -87,7 +87,7 @@ jobs:
           if (!(gcc --version | select-string -quiet clang)) { throw "wrong gcc compiler detected - must be clang" }
           make
         name: make
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: generate-windows-cpu
           path: |
@@ -101,7 +101,7 @@ jobs:
     env:
       KEY_CONTAINER: ${{ vars.KEY_CONTAINER }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Set make jobs default
         run: |
           echo "MAKEFLAGS=--jobs=$((Get-ComputerInfo -Property CsProcessors).CsProcessors.NumberOfCores)" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
@@ -115,14 +115,14 @@ jobs:
       - name: Install msys2 tools
         run: |
           Start-Process "c:\msys64\usr\bin\pacman.exe" -ArgumentList @("-S", "--noconfirm", "mingw-w64-clang-x86_64-gcc-compat", "mingw-w64-clang-x86_64-clang") -NoNewWindow -Wait
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with:
           go-version-file: go.mod
           cache: true
       # ROCM installation steps
       - name: 'Cache ROCm installer'
         id: cache-rocm
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: rocm-install.exe
           key: ${{ env.ROCM_WINDOWS_URL }}
@@ -145,7 +145,7 @@ jobs:
           if (!(gcc --version | select-string -quiet clang)) { throw "wrong gcc compiler detected - must be clang" }
           make -C llama print-HIP_PATH print-HIP_LIB_DIR
           make rocm
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: generate-windows-rocm
           path: |
@@ -166,7 +166,7 @@ jobs:
     env:
       KEY_CONTAINER: ${{ vars.KEY_CONTAINER }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Set make jobs default
         run: |
           echo "MAKEFLAGS=--jobs=$((Get-ComputerInfo -Property CsProcessors).CsProcessors.NumberOfCores)" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
@@ -191,14 +191,14 @@ jobs:
           gcc --version
           get-command make
           make --version
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with:
           go-version-file: go.mod
           cache: true
       # CUDA installation steps
       - name: 'Cache CUDA installer'
         id: cache-cuda
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: cuda-install.exe
           key: ${{ matrix.cuda.url }}
@@ -227,7 +227,7 @@ jobs:
           Enter-VsDevShell -vsinstallpath 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise' -skipautomaticlocation -DevCmdArguments '-arch=x64 -no_logo'
           if (!(gcc --version | select-string -quiet clang)) { throw "wrong gcc compiler detected - must be clang" }
           make cuda_v$(($env:CUDA_PATH | split-path -leaf) -replace 'v(\d+).*', '$1')
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: generate-windows-cuda-${{ matrix.cuda.version }}
           path: |
@@ -334,12 +334,12 @@ jobs:
         run: |
           echo $env:PATH
           gcc --version
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Set Version
         run: |
           $ver=${env:GITHUB_REF_NAME}.trim("v")
           echo VERSION=$ver | Out-File -FilePath ${env:GITHUB_ENV} -Encoding utf8 -Append
-      - uses: 'google-github-actions/auth@v2'
+      - uses: 'google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed' # v2
         with:
           project_id: 'ollama'
           credentials_json: '${{ secrets.GOOGLE_SIGNING_CREDENTIALS }}'
@@ -361,7 +361,7 @@ jobs:
           write-host "Installing plugin"
           & "${env:RUNNER_TEMP}\plugin\*\kmscng.msi" /quiet
           write-host "plugin installed"
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with:
           go-version-file: go.mod
           cache: true
@@ -376,7 +376,7 @@ jobs:
           $env:ARCH="arm64"
           .\scripts\build_windows.ps1 buildOllama buildApp gatherDependencies sign distZip
         name: 'Windows Build'
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: windows-arm64
           path: |
@@ -396,13 +396,13 @@ jobs:
     env:
       KEY_CONTAINER: ${{ vars.KEY_CONTAINER }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           submodules: recursive
       - name: Set Version
         shell: bash
         run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
-      - uses: 'google-github-actions/auth@v2'
+      - uses: 'google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed' # v2
         with:
           project_id: 'ollama'
           credentials_json: '${{ secrets.GOOGLE_SIGNING_CREDENTIALS }}'
@@ -442,24 +442,24 @@ jobs:
           gcc --version
           get-command make
           make --version
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with:
           go-version-file: go.mod
           cache: true
       - run: go get
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: generate-windows-cpu
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: generate-windows-cuda-11.3
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: generate-windows-cuda-12.4
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: generate-windows-rocm
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: windows-arm64
           path: dist
@@ -471,7 +471,7 @@ jobs:
           $env:ARCH="amd64"
           if (!(gcc --version | select-string -quiet clang)) { throw "wrong gcc compiler detected - must be clang" }
           & .\scripts\build_windows.ps1
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: dist-windows
           path: |
@@ -485,7 +485,7 @@ jobs:
     env:
       PLATFORM: linux/amd64
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           submodules: recursive
       - name: Set Version
@@ -493,7 +493,7 @@ jobs:
         run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
       - run: |
           ./scripts/build_linux.sh
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: dist-linux-amd64
           path: |
@@ -508,7 +508,7 @@ jobs:
     env:
       PLATFORM: linux/arm64
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           submodules: recursive
       - name: Set Version
@@ -537,7 +537,7 @@ jobs:
           sudo setfacl --modify user:$USER:rw /var/run/docker.sock
       - run: |
           ./scripts/build_linux.sh
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: dist-linux-arm64
           path: |
@@ -556,7 +556,7 @@ jobs:
     env:
       FINAL_IMAGE_REPO: ollama/ollama
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           submodules: recursive
       - name: 'Install Docker'
@@ -577,7 +577,7 @@ jobs:
           sudo setfacl --modify user:$USER:rw /var/run/docker.sock
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
         with:
           images: ${{ env.FINAL_IMAGE_REPO }}
           flavor: |
@@ -595,15 +595,15 @@ jobs:
           esac >>$GITHUB_ENV
           echo GOFLAGS="'-ldflags=-w -s \"-X=github.com/ollama/ollama/version.Version=${{ env.DOCKER_METADATA_OUTPUT_VERSION }}\" \"-X=github.com/ollama/ollama/server.mode=release\"'" >>$GITHUB_ENV
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
       - name: Login to Docker Hub
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           username: ${{ vars.DOCKER_USER }}
           password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
       - name: Build and push by digest
         id: build
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         with:
           context: "."
           platforms: linux/${{ env.ARCH }}
@@ -616,7 +616,7 @@ jobs:
           digest="${{ steps.build.outputs.digest }}"
           touch "/tmp/digests/${digest#sha256:}"
       - name: Upload digest
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: digests-${{ env.PLATFORM_PAIR }}
           path: /tmp/digests/*
@@ -630,20 +630,20 @@ jobs:
     env:
       FINAL_IMAGE_REPO: ollama/ollama
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           submodules: recursive
       - name: Download digests
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           path: /tmp/digests
           pattern: digests-*
           merge-multiple: true
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
         with:
           images: ${{ env.FINAL_IMAGE_REPO }}
           flavor: |
@@ -661,7 +661,7 @@ jobs:
           esac >>$GITHUB_ENV
           echo GOFLAGS="'-ldflags=-w -s \"-X=github.com/ollama/ollama/version.Version=${{ env.DOCKER_METADATA_OUTPUT_VERSION }}\" \"-X=github.com/ollama/ollama/server.mode=release\"'" >>$GITHUB_ENV
       - name: Login to Docker Hub
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           username: ${{ vars.DOCKER_USER }}
           password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
@@ -681,12 +681,12 @@ jobs:
       ARCH: amd64
       PLATFORM_PAIR: linux-amd64
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           submodules: recursive
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
         with:
           images: ${{ env.FINAL_IMAGE_REPO }}
           flavor: |
@@ -699,15 +699,15 @@ jobs:
         run: |
           echo GOFLAGS="'-ldflags=-w -s \"-X=github.com/ollama/ollama/version.Version=${{ env.DOCKER_METADATA_OUTPUT_VERSION }}\" \"-X=github.com/ollama/ollama/server.mode=release\"'" >>$GITHUB_ENV
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
       - name: Login to Docker Hub
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           username: ${{ vars.DOCKER_USER }}
           password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
       - name: Build and push by digest
         id: build
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         with:
           context: "."
           target: runtime-rocm
@@ -730,14 +730,14 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Set Version
         shell: bash
         run: |
           echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
           echo "RELEASE_VERSION=$(echo ${GITHUB_REF_NAME} | cut -f1 -d-)" >> $GITHUB_ENV
       - name: Retrieve built artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           path: dist
           pattern: dist-*

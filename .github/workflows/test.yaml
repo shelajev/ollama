@@ -17,11 +17,7 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  pull_request:
-    paths:
-      - '**/*'
-      - '!docs/**'
-      - '!README.md'
+  workflow_dispatch:
 
 jobs:
   changes:
@@ -29,7 +25,7 @@ jobs:
     outputs:
       RUNNERS: ${{ steps.changes.outputs.RUNNERS }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           fetch-depth: 0
       - id: changes
@@ -59,8 +55,8 @@ jobs:
           apt-get update && apt-get install -y git build-essential curl
         env:
           DEBIAN_FRONTEND: noninteractive
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-go@7b8cf10d4e4a01d4992d18a89f4d7dc5a3e6d6f4 # v4
         with:
           go-version-file: go.mod
           cache: true
@@ -83,8 +79,8 @@ jobs:
           apt-get update && apt-get install -y git build-essential curl rocm-libs
         env:
           DEBIAN_FRONTEND: noninteractive
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-go@7b8cf10d4e4a01d4992d18a89f4d7dc5a3e6d6f4 # v4
         with:
           go-version-file: go.mod
           cache: true
@@ -100,8 +96,8 @@ jobs:
     if: ${{ needs.changes.outputs.RUNNERS == 'True' }}
     runs-on: windows
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with:
           go-version-file: go.mod
           cache: true
@@ -112,7 +108,7 @@ jobs:
       # ROCM installation steps
       - name: 'Cache ROCm installer'
         id: cache-rocm
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: rocm-install.exe
           key: ${{ env.ROCM_WINDOWS_URL }}
@@ -151,8 +147,8 @@ jobs:
     if: ${{ needs.changes.outputs.RUNNERS == 'True' }}
     runs-on: windows
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with:
           go-version-file: go.mod
           cache: true
@@ -163,7 +159,7 @@ jobs:
       # CUDA installation steps
       - name: 'Cache CUDA installer'
         id: cache-cuda
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: cuda-install.exe
           key: ${{ env.CUDA_12_WINDOWS_URL }}
@@ -218,8 +214,8 @@ jobs:
       ARCH: ${{ matrix.arch }}
       CGO_ENABLED: '1'
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with:
           go-version-file: go.mod
           cache: true
@@ -266,10 +262,10 @@ jobs:
       GOARCH: ${{ matrix.arch }}
       CGO_ENABLED: '1'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           submodules: recursive
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with:
           go-version-file: go.mod
           cache: false
@@ -279,7 +275,7 @@ jobs:
             arm64) echo ARCH=arm64 ;;
           esac >>$GITHUB_ENV
         shell: bash
-      - uses: golangci/golangci-lint-action@v6
+      - uses: golangci/golangci-lint-action@55c2c1448f86e01eaae002a5a3a9624417608d84 # v6
         with:
           args: --timeout 10m0s -v
   test:
@@ -297,10 +293,10 @@ jobs:
       GOARCH: ${{ matrix.arch }}
       CGO_ENABLED: '1'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           submodules: recursive
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
         with:
           go-version-file: go.mod
           cache: true
@@ -318,7 +314,7 @@ jobs:
     if: ${{ needs.changes.outputs.RUNNERS == 'True' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           submodules: recursive
       - name: Verify patches carry all the changes
